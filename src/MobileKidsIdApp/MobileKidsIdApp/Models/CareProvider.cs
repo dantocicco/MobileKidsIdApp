@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace MobileKidsIdApp.Models
+﻿namespace MobileKidsIdApp.Models
 {
     public class CareProvider
     {
-        public Guid Id { get; set; }
-
         public string ProviderName { get; set; }
 
         public string ClinicName { get; set; }

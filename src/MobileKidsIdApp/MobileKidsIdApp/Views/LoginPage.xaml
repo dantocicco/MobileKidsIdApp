@@ -20,38 +20,31 @@
     <StackLayout>
         <StackLayout Orientation="Horizontal">
             <Image Margin="25" Source="icon.png" />
-            <Label Style="{StaticResource HeaderLabel}" Text="Login" />
+            <Label Text="Login" />
         </StackLayout>
-        <Label Style="{StaticResource EntryLabel}" Text="Password" />
+        <Label Text="Password" />
         <Entry
             IsPassword="True"
             Placeholder="Password"
-            Style="{StaticResource EntryText}"
             Text="{Binding Path=Password}" />
         <Label
             d:IsVisible="False"
             IsVisible="{Binding InvalidPassword}"
-            Style="{StaticResource ErrorLabel}"
             Text="Invalid password" />
         <Label
             d:IsVisible="True"
-            IsVisible="{Binding FirstRun}"
-            Style="{StaticResource EntryLabel}"
+            IsVisible="{Binding SetPassword}"
             Text="Re-enter password" />
         <Entry
             IsPassword="True"
-            IsVisible="{Binding FirstRun}"
+            IsVisible="{Binding SetPassword}"
             Placeholder="Password"
-            Style="{StaticResource EntryText}"
             Text="{Binding Path=PasswordConfirm}" />
         <Label
-            d:IsVisible="False"
             IsVisible="{Binding PasswordsMustMatch}"
-            Style="{StaticResource ErrorLabel}"
             Text="Passwords must match" />
         <Button
-            Command="{Binding SigninCommand}"
-            Style="{StaticResource LoginButton}"
+            Command="{Binding SignInCommand}"
             Text="Sign in" />
     </StackLayout>
 </app:ContentPageBase>

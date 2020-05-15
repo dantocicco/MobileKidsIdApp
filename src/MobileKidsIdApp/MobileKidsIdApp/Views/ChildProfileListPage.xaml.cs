@@ -1,37 +1,22 @@
 ﻿using System;
-using Xamarin.Forms;
+using MobileKidsIdApp.Models;
+using MobileKidsIdApp.ViewModels;
 
 namespace MobileKidsIdApp.Views
 {
-    public partial class ChildProfileListPage : ContentPage
+    public partial class ChildProfileListPage : ContentPageBase
     {
-        public ChildProfileListPage()
-        {
-            InitializeComponent();
-            BindingContext = new ViewModels.ChildProfileList();
-        }
+        protected new ChildProfileListViewModel ViewModel => BindingContext as ChildProfileListViewModel;
+
+        public ChildProfileListPage() => InitializeComponent();
 
         private async void ShowChild(object sender, EventArgs e)
         {
-            var child = (Models.Child)((ListView)sender).SelectedItem;
-            await ((ViewModels.ChildProfileList)BindingContext).ShowChild(child);
-        }
+            // TODO: this will go away with a collection view
+            // normally, we would use a behavior called "event to command"
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            ((ViewModels.IViewModel)BindingContext).SetActiveView();
-
-            if (!(BindingContext is ViewModels.ChildProfileList viewModel) || viewModel.IsBusy)
-                return;
-
-            viewModel.LoadCommand.Execute(null);
-        }
-
-        protected override async void OnDisappearing()
-        {
-            base.OnDisappearing();
-            await ((ViewModels.IViewModel)BindingContext).CloseView(true);
+            var child = childList.SelectedItem as Child;
+            await ViewModel.ChildTapped(child);
         }
     }
 }

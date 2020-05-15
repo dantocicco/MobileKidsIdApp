@@ -17,9 +17,14 @@ namespace MobileKidsIdApp
         {
             Container.RegisterSingleton<AuthenticationService>();
             Container.RegisterSingleton<FamilyRepository>();
+            Container.RegisterSingleton<SettingsRepository>();
         }
 
         protected override Task<Page> CreateMainPage()
             => CreatePage<LoginPage, LoginViewModel>();
+
+        // TODO: use onstart/pause/resume to add more security around auth
+        // TODO: Add tabs for instruction index
+        // TODO: Add "logout" ability
     }
 }

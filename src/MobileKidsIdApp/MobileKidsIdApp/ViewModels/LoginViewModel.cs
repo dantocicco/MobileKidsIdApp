@@ -1,10 +1,14 @@
 ﻿using System.Threading.Tasks;
+using MobileKidsIdApp.Services;
+using MobileKidsIdApp.Views;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
+        private readonly AuthenticationService _auth;
+
         private string _password;
         public string Password
         {
@@ -20,7 +24,7 @@ namespace MobileKidsIdApp.ViewModels
         }
 
         private bool _firstRun;
-        public bool FirstRun
+        public bool SetPassword
         {
             get => _firstRun;
             set => SetProperty(ref _firstRun, value);
@@ -40,46 +44,43 @@ namespace MobileKidsIdApp.ViewModels
             set => SetProperty(ref _passwordMustMatch, value);
         }
 
-        public Command SigninCommand { get; private set; }
+        public Command SignInCommand { get; private set; }
 
-        public LoginViewModel()
+        public LoginViewModel(AuthenticationService auth, SettingsRepository settings)
         {
-            SigninCommand = new Command(async () => await DoAuthentication());
+            _auth = auth;
+
+            SignInCommand = new Command(async () => await SignIn());
+
+            SetPassword = settings.AllowPasswordSetup;
         }
 
-        private void SetFirstRun()
+        private async Task SignIn()
         {
-            var cmd = Csla.DataPortal.Fetch<Models.FamilyExists>();
-            FirstRun = !cmd.Exists;
-            OnPropertyChanged("FirstRun");
-        }
+            bool passwordValid = false;
 
-        private async Task DoAuthentication()
-        {
-            if (FirstRun)
+            if (SetPassword && Password == PasswordConfirm)
             {
-                if (Password != PasswordConfirm)
+                await _auth.SetAppPassword(Password);
+                passwordValid = true;
+            }
+            else if (SetPassword)
+            {
+                PasswordsMustMatch = true;
+            }
+            else // Confirm password
+            {
+                passwordValid = await _auth.VerifyAppPassword(Password);
+
+                if (!passwordValid)
                 {
-                    PasswordsMustMatch = true;
-                    OnPropertyChanged("PasswordsMustMatch");
-                    return;
-                }
-                else
-                {
-                    PasswordsMustMatch = true;
-                    OnPropertyChanged("PasswordsMustMatch");
+                    InvalidPassword = true;
                 }
             }
-            var identity = await Models.AppIdentity.LoginAsync(Password);
-            Csla.ApplicationContext.User = new Models.AppPrincipal(identity);
-            if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+
+            if (passwordValid)
             {
-                SetRootPage?.Invoke();
-            }
-            else
-            {
-                InvalidPassword = true;
-                OnPropertyChanged("InvalidPassword");
+                await ReplaceMainPageAsync<ChildProfileListPage, ChildProfileListViewModel>();
             }
         }
     }

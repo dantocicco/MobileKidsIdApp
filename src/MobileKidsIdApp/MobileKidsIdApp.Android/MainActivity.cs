@@ -3,6 +3,8 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using MobileKidsIdApp.Droid.Platform;
+using MobileKidsIdApp.Platform;
 using Unity;
 
 namespace MobileKidsIdApp.Droid
@@ -49,7 +51,7 @@ namespace MobileKidsIdApp.Droid
 
         private void PlatformInitializeContainer(UnityContainer container)
         {
-
+            container.RegisterType<IContactPicker, ContactPicker>();
         }
     }
 }

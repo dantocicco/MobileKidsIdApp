@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MobileKidsIdApp.Views.BasicDetailsPage"
-             xmlns:controls="clr-namespace:MobileKidsIdApp.Controls;assembly=MobileKidsIdApp"
-             Title="Basic details">
+<app:ContentPageBase
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MobileKidsIdApp.Views.BasicDetailsPage"
+
+    xmlns:app="clr-namespace:MobileKidsIdApp"
+    Title="Basic details">
    
     <TableView Intent="Form">
         <TableView.Root>
             <TableSection Title="Name">
 
-                <EntryCell Label="Given" Placeholder="Enter Given/First Name" Text="{Binding Model.GivenName}">
+                <EntryCell Label="Given" Placeholder="Enter Given/First Name" Text="{Binding Child.GivenName}">
                     <EntryCell.Keyboard>
                         <Keyboard x:FactoryMethod="Create">
                             <x:Arguments>
@@ -19,7 +21,7 @@
                     </EntryCell.Keyboard>
                 </EntryCell>
                 
-                <EntryCell Label="Nickname" Placeholder="Enter Nickname" Text="{Binding Model.NickName}">
+                <EntryCell Label="Nickname" Placeholder="Enter Nickname" Text="{Binding Child.NickName}">
                     <EntryCell.Keyboard>
                         <Keyboard x:FactoryMethod="Create">
                             <x:Arguments>
@@ -29,7 +31,7 @@
                     </EntryCell.Keyboard>
                 </EntryCell>
 
-                <EntryCell Label="Middle" Placeholder="Enter Middle Name" Text="{Binding Model.AdditionalName}">
+                <EntryCell Label="Middle" Placeholder="Enter Middle Name" Text="{Binding Child.AdditionalName}">
                     <EntryCell.Keyboard>
                         <Keyboard x:FactoryMethod="Create">
                             <x:Arguments>
@@ -39,7 +41,7 @@
                     </EntryCell.Keyboard>
                 </EntryCell>
                 
-                <EntryCell Label="Family" Placeholder="Enter Family/Last/Sur Name" Text="{Binding Model.FamilyName}">
+                <EntryCell Label="Family" Placeholder="Enter Family/Last/Sur Name" Text="{Binding Child.FamilyName}">
                     <EntryCell.Keyboard>
                         <Keyboard x:FactoryMethod="Create">
                             <x:Arguments>
@@ -52,11 +54,11 @@
             </TableSection>
             <TableSection Title="Birthday">
                 <ViewCell>
-                    <DatePicker Date="{Binding Model.Birthday}"/>
+                    <DatePicker Date="{Binding Child.Birthday}"/>
                 </ViewCell>
             </TableSection>
             <TableSection Title="Contact">
-                <EntryCell Label="Contact Name (Manual)" Placeholder="Enter Contact Name" Text="{Binding Model.ContactNameManual}">
+                <EntryCell Label="Contact Name (Manual)" Placeholder="Enter Contact Name" Text="{Binding Child.ContactNameManual}">
                     <EntryCell.Keyboard>
                         <Keyboard x:FactoryMethod="Create">
                             <x:Arguments>
@@ -65,7 +67,7 @@
                         </Keyboard>
                     </EntryCell.Keyboard>
                 </EntryCell>
-                <EntryCell Label="Contact Phone (Manual)" Placeholder="Enter Contact Phone" Text="{Binding Model.ContactPhoneManual}">
+                <EntryCell Label="Contact Phone (Manual)" Placeholder="Enter Contact Phone" Text="{Binding Child.ContactPhoneManual}">
                     <EntryCell.Keyboard>
                         <Keyboard x:FactoryMethod="Create">
                             <x:Arguments>
@@ -77,10 +79,10 @@
                 <ViewCell>
                     <StackLayout Orientation="Vertical">
                       <Button Text="Add/Change Contact from Contacts" Command="{Binding ChangeContactCommand}" />
-                      <controls:PhoneContact BindingContext="{Binding Contact}" Margin="3" />
+                      <app:PhoneContactView BindingContext="{Binding Contact}" Margin="3" />
                     </StackLayout>
                   </ViewCell>
             </TableSection>
         </TableView.Root>
     </TableView>
-</ContentPage>
+</app:ContentPageBase>

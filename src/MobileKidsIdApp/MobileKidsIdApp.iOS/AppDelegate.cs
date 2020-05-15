@@ -1,6 +1,10 @@
 ﻿using Foundation;
+using MobileKidsIdApp.iOS.Platform;
+using MobileKidsIdApp.Platform;
+using Security;
 using UIKit;
 using Unity;
+using Xamarin.Essentials;
 
 namespace MobileKidsIdApp.iOS
 {
@@ -19,6 +23,8 @@ namespace MobileKidsIdApp.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            SecureStorage.DefaultAccessible = SecAccessible.WhenUnlockedThisDeviceOnly;
+
             global::Xamarin.Forms.Forms.Init();
 
             var formsApp = new App();
@@ -29,7 +35,7 @@ namespace MobileKidsIdApp.iOS
 
         private void PlatformInitializeContainer(UnityContainer container)
         {
-
+            container.RegisterType<IContactPicker, ContactPicker>();
         }
     }
 }

@@ -1,11 +1,7 @@
-﻿
-using System;
-
-namespace MobileKidsIdApp.ViewModels
+﻿namespace MobileKidsIdApp.ViewModels
 {
     public class ContactInfo
     {
-        public Guid Id { get; set; }
         public string FamilyName { get; set; }
         public string NickName { get; set; }
         public string AdditionalName { get; set; }

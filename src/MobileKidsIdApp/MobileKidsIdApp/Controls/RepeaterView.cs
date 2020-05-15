@@ -3,6 +3,7 @@ using Xamarin.Forms;
 
 namespace MobileKidsIdApp
 {
+    // TODO: Replace with Xamarin.Forms Bindable Layouts
     public sealed class RepeaterView<T> : StackLayout
     {
         public RepeaterView()
@@ -26,6 +27,7 @@ namespace MobileKidsIdApp
 #pragma warning disable CS0618 // Type or member is obsolete
             BindableProperty.Create<RepeaterView<T>, ObservableCollection<T>>(
                 p => p.ItemsSource, new ObservableCollection<T>(), BindingMode.OneWay, null, ItemSourceChanged);
+
 #pragma warning restore CS0618 // Type or member is obsolete
 
         public static readonly BindableProperty ItemTemplateProperty =
@@ -33,7 +35,7 @@ namespace MobileKidsIdApp
             BindableProperty.Create<RepeaterView<T>, DataTemplate>(p => p.ItemTemplate, default(DataTemplate));
 #pragma warning restore CS0618 // Type or member is obsolete
 
-        private static void ItemSourceChanged(NotifyPropertyChanged bindable, ObservableCollection<T> oldValue, ObservableCollection<T> newValue)
+        private static void ItemSourceChanged(BindableObject bindable, ObservableCollection<T> oldValue, ObservableCollection<T> newValue)
         {
             if (bindable is RepeaterView<T> control)
             {

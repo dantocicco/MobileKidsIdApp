@@ -1,129 +1,72 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using MobileKidsIdApp.Models;
-using System.Windows.Input;
+using MobileKidsIdApp.Services;
+using MobileKidsIdApp.Views;
 using Xamarin.Forms;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class ChildProfileListViewModel : ViewModelBase<Models.Family>
+    public class ChildProfileListViewModel : ViewModelBase
     {
-        public ICommand NewItemCommand { get; private set; }
-        public ICommand RemoveItemCommand { get; private set; }
-        public Command LoadCommand { get; private set; }
-        public ObservableCollection<Family> Kids { get; set; }
+        private readonly FamilyRepository _family;
 
-        public ChildProfileListViewModel()
+        private bool _isBusy;
+        public bool IsBusy
         {
-            App.CurrentFamily = this;
-            NewItemCommand = new Command(() => BeginAddNew());
-            RemoveItemCommand = new Command(async (item) => { DoRemove(item); await SaveFamilyAsync(); });
-            LoadCommand = new Command(async () => await ExecuteLoadCommand(), () => !IsBusy);
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
         }
 
-        private async Task ExecuteLoadCommand()
-        {
-            if (IsBusy)
-            {
-                return;
-            }
+        public ObservableCollection<Child> Kids { get; private set; } = new ObservableCollection<Child>();
 
+        public Command AddChildCommand { get; private set; }
+        public Command<Child> RemoveChildCommand { get; private set; }
+        public Command RefreshCommand { get; private set; }
+
+        public ChildProfileListViewModel(FamilyRepository family)
+        {
+            _family = family;
+
+            AddChildCommand = new Command(async () => await AddChild());
+            RemoveChildCommand = new Command<Child>(RemoveChild);
+            RefreshCommand = new Command(Refresh);
+        }
+
+        public override void OnAppearing()
+        {
+            _family.ClearCurrentChild();
+            Refresh();
+        }
+
+        private void Refresh()
+        {
             IsBusy = true;
-            try
-            {
-                await InitAsync();
-            }
-            catch(Exception e)
-            {
-                Debug.WriteLine($"Exception in ChildProfileList.ExecuteLoadCommand(): {e}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
 
-            LoadCommand.ChangeCanExecute();
+            List<Child> children = _family.Children;
+            Kids.Clear();
+            children.ForEach((_) => Kids.Add(_));
+
+            IsBusy = false;
         }
 
-        protected override Task<Family> DoInitAsync()
+        private async Task AddChild()
         {
-            return Csla.DataPortal.FetchAsync<Models.Family>();
+            await PushAsync<ChildProfileItemPage, ChildProfileeVViewModel>(false);
+            await PushAsync<BasicDetailsPage, BasicDetailsViewModel>();
         }
 
-        protected override void OnModelChanged(Family oldValue, Family newValue)
+        private void RemoveChild(Child child)
         {
-            //TODO: remove this OnPropertyChanged call when updating CSLA -
-            // it is a workaround for a bug that's fixed in future versions
-            // 2-11-2017 : Still necessary.
-            OnPropertyChanged("Model");
-
-            if (oldValue != null)
-                oldValue.AddedNew -= Model_AddedNew;
-            if (newValue != null)
-                newValue.AddedNew += Model_AddedNew;
-            base.OnModelChanged(oldValue, newValue);
+            Kids.Remove(child);
+            _family.RemoveChild(child);
         }
 
-        private async void Model_AddedNew(object sender, Csla.Core.AddedNewEventArgs<Child> e)
+        public async Task ChildTapped(Child child)
         {
-            await ShowChild(e.NewObject, true);
-        }
-
-        public static Child CurrentChild { get; set; }
-
-        public async Task ShowChild(Child child, bool? isNew = false)
-        {
-            CurrentChild = child;
-            var childProfileItemVM = new ChildProfileItem(child);
-            if (isNew.Value)
-                childProfileItemVM.FirstAdd = true;
-            await ShowPage(typeof(Views.ChildProfileItem), childProfileItemVM);
-        }
-
-        public async Task SaveFamilyAsync()
-        {
-            try
-            {
-                var savable = Model as Csla.Core.ISavable;
-
-                Error = null;
-                IsBusy = true;
-                OnSaving(Model);
-
-                var saved = (Family)await savable.SaveAsync();
-                var merger = new Csla.Core.GraphMerger();
-                merger.MergeBusinessListGraph<Family, Child>(Model, saved);
-
-                // reset CurrentChild
-                if (CurrentChild != null)
-                {
-                    foreach (var item in Model)
-                    {
-                        var itemDetails = item.ChildDetails;
-                        var curDetails = CurrentChild.ChildDetails;
-                        if (itemDetails.GivenName == curDetails.GivenName &&
-                            itemDetails.FamilyName == curDetails.FamilyName &&
-                            itemDetails.Birthday == curDetails.Birthday)
-                        {
-                            CurrentChild = item;
-                            break;
-                        }
-                    }
-                }
-
-                IsBusy = false;
-                OnSaved();
-            }
-            catch (Exception ex)
-            {
-                IsBusy = false;
-                Error = ex;
-                Console.WriteLine("Error while saving family.");
-                Console.WriteLine(ex);
-                OnSaved();
-            }
+            _family.SetCurrentChild(child);
+            await PushAsync<ChildProfileItemPage, ChildProfileeVViewModel>();
         }
     }
 }

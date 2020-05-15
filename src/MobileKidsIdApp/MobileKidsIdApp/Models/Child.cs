@@ -5,7 +5,7 @@ namespace MobileKidsIdApp.Models
 {
     public partial class Child
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string GivenName { get; set; }
 
@@ -25,14 +25,14 @@ namespace MobileKidsIdApp.Models
 
         public List<DistinguishingFeature> DistinguishingFeatures { get; set; } = new List<DistinguishingFeature>();
 
-        public List<CareProvider> ProfessionalCareProviders { get; set; }
+        public List<CareProvider> ProfessionalCareProviders { get; set; } = new List<CareProvider>();
 
-        public List<FamilyMember> FamilyMembers { get; set; }
+        public List<FamilyMember> FamilyMembers { get; set; } = new List<FamilyMember>();
 
-        public List<Friend> Friends { get; set; }
+        public List<Friend> Friends { get; set; } = new List<Friend>();
 
-        public List<FileReference> Documents { get; set; }
+        public List<FileReference> Documents { get; set; } = new List<FileReference>();
 
-        public List<FileReference> Photos { get; set; }
+        public List<FileReference> Photos { get; set; } = new List<FileReference>();
     }
 }
