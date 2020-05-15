@@ -1,15 +1,22 @@
 ﻿using System;
-
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using Android.Content;
+using Unity;
 
 namespace MobileKidsIdApp.Droid
 {
-    [Activity(Label = "Kids Id Kit", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(
+        Label = "Kids Id Kit",
+        Icon = "@mipmap/icon",
+        Theme = "@style/MainTheme",
+        MainLauncher = true,
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        public event EventHandler<ActivityResultEventArgs> ActivityResult;
+
         protected override void OnCreate(Bundle bundle)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -17,10 +24,10 @@ namespace MobileKidsIdApp.Droid
 
             base.OnCreate(bundle);
 
-            Instance = this;
-
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            LoadApplication(new App());
+
+            var formsApp = new App();
+            formsApp.Init(PlatformInitializeContainer);
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -40,9 +47,10 @@ namespace MobileKidsIdApp.Droid
             }
         }
 
-        internal static MainActivity Instance { get; private set; }
+        private void PlatformInitializeContainer(UnityContainer container)
+        {
 
-        public event EventHandler<ActivityResultEventArgs> ActivityResult;
+        }
     }
 }
 

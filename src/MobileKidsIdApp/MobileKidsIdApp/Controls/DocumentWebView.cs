@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace MobileKidsIdApp.Controls
+namespace MobileKidsIdApp
 {
     public class DocumentWebView : WebView
     {

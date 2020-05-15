@@ -58,9 +58,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CSLA-XamarinForms">
-      <Version>4.11.2</Version>
-    </PackageReference>
     <PackageReference Include="PCLCrypto">
       <Version>2.0.147</Version>
     </PackageReference>
@@ -76,16 +73,19 @@
   <PackageReference Include="Xamarin.Essentials">
     <Version>1.5.3.1</Version>
   </PackageReference>
+  <PackageReference Include="Unity">
+    <Version>5.11.6</Version>
+  </PackageReference>
 </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityResultEventArgs.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AndroidDownloader.cs" />
-    <Compile Include="Services\ContactPicker.cs" />
-    <Compile Include="Services\PhotoPicker.cs" />
-    <Compile Include="Services\WebViewContentHelper.cs" />
+    <Compile Include="Platform\AndroidDownloader.cs" />
+    <Compile Include="Platform\ContactPicker.cs" />
+    <Compile Include="Platform\PhotoPicker.cs" />
+    <Compile Include="Platform\WebViewContentHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -117,10 +117,6 @@
     <ProjectReference Include="..\MobileKidsIdApp\MobileKidsIdApp.csproj">
       <Project>{c16814ae-85b2-4df5-89ab-957d6d68d946}</Project>
       <Name>MobileKidsIdApp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\MobileKidsIdApp.Models\MobileKidsIdApp.Models.csproj">
-      <Project>{A6D14000-2F57-46FA-9378-6A2F1A6713E9}</Project>
-      <Name>MobileKidsIdApp.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

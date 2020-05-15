@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Foundation;
-using MobileKidsIdApp.Models;
-using MobileKidsIdApp.Services;
+﻿using Foundation;
 using UIKit;
+using Unity;
 
 namespace MobileKidsIdApp.iOS
 {
@@ -25,9 +20,16 @@ namespace MobileKidsIdApp.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App());
+
+            var formsApp = new App();
+            formsApp.Init(PlatformInitializeContainer);
 
             return base.FinishedLaunching(app, options);
+        }
+
+        private void PlatformInitializeContainer(UnityContainer container)
+        {
+
         }
     }
 }
