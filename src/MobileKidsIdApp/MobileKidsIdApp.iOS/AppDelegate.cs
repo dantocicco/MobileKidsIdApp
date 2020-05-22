@@ -30,6 +30,7 @@ namespace MobileKidsIdApp.iOS
             var formsApp = new App();
             formsApp.Init(PlatformInitializeContainer);
 
+            LoadApplication(formsApp);
             return base.FinishedLaunching(app, options);
         }
 

@@ -30,6 +30,7 @@ namespace MobileKidsIdApp.Droid
 
             var formsApp = new App();
             formsApp.Init(PlatformInitializeContainer);
+            LoadApplication(formsApp);
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
