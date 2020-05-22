@@ -1,23 +1,32 @@
-﻿using Csla.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Services;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class FamilyMemberListViewModel : ViewModelBase<Models.FamilyMemberList>
+    public class FamilyMemberListViewModel : ViewModelBase
     {
-        public ICommand NewItemCommand { get; private set; }
+        private readonly FamilyRepository _family;
 
-        public FamilyMemberListViewModel(Models.FamilyMemberList list)
+        public ObservableCollection<FamilyMember> FamilyMembers { get; private set; } = new ObservableCollection<FamilyMember>();
+
+        public Command NewFamilyMemberCommand { get; private set; }
+
+        public FamilyMemberListViewModel(FamilyRepository family)
         {
-            NewItemCommand = new Command(() => BeginAddNew());
+            _family = family;
 
-            Model = list;
+            family.CurrentChild.FamilyMembers.ForEach(_ => FamilyMembers.Add(_));
+
+            NewFamilyMemberCommand = new Command(AddFamilyMember);
+        }
+
+        private void AddFamilyMember()
+        {
+            var familyMember = new FamilyMember();
+            _family.CurrentChild.FamilyMembers.Add(familyMember);
+            FamilyMembers.Add(familyMember);
         }
     }
 }

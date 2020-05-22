@@ -1,38 +1,50 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using MobileKidsIdApp.Platform;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class StaticContentViewModel : NotifyPropertyChanged
+    public class StaticContentViewModel : ViewModelBase
     {
+        // TODO: Rework to use Label. It supports HTML Content. 
+        private readonly IWebViewContentHelper _contentHelper;
+
         private string _title;
         public string Title
-        { get { return _title; } set { _title = value; OnPropertyChanged("Title"); } }
+        {
+            get => _title;
+            set => SetProperty(ref _title, value);
+        }
 
-        private HtmlWebViewSource _htmlSource;
+        private HtmlWebViewSource _htmlSource = new HtmlWebViewSource();
         public HtmlWebViewSource HtmlSource
         {
-            get { return _htmlSource; }
-            private set { _htmlSource = value; OnPropertyChanged("HtmlSource"); }
+            get => _htmlSource;
+            set => SetProperty(ref _htmlSource, value);
         }
-        public StaticContentViewModel(string contentName)
-        {
-            var contentHelper = DependencyService.Get<IWebViewContentHelper>();
 
-            HtmlSource = new HtmlWebViewSource();
+        public StaticContentViewModel(IWebViewContentHelper contentHelper)
+        {
+            _contentHelper = contentHelper;
+            HtmlSource.BaseUrl = _contentHelper.GetBaseUrl();
+        }
+
+        public async override Task Initialize(Dictionary<string, object> navigationsParams = null)
+        {
+            navigationsParams.TryGetValue("contentName", out object contentName);
 
             try
             {
-                HtmlSource.Html = contentHelper.LoadContentString(contentName);
+                HtmlSource.Html = _contentHelper.LoadContentString((string)contentName);
             }
             catch (FileNotFoundException)
             {
                 HtmlSource.Html = "<html><body><div><h1>Topic Not Found</h1><p>The requested topic was not found.</p></div></body></html>";
             }
 
-            HtmlSource.BaseUrl = contentHelper.GetBaseUrl();
+            await Task.CompletedTask;
         }
-
     }
 }

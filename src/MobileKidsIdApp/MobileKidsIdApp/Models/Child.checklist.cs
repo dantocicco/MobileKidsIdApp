@@ -2,24 +2,76 @@
 {
     public partial class Child
     {
-        public bool ChildPhotoComplete { get; set; }
+        // TODO: Review the usage of these proeprties.
 
-        public bool BirthCertificateComplete { get; set; }
+        private bool _childPhotoComplete;
+        public bool ChildPhotoComplete
+        {
+            get => _childPhotoComplete;
+            set => SetProperty(ref _childPhotoComplete, value);
+        }
 
-        public bool SocialSecurityCardComplete { get; set; }
+        private bool _birthCertificateComplete;
+        public bool BirthCertificateComplete
+        {
+            get => _birthCertificateComplete;
+            set => SetProperty(ref _birthCertificateComplete, value);
+        }
 
-        public bool PhysicalDetailsComplete { get; set; }
+        private bool _socialSecurityCardComplete;
+        public bool SocialSecurityCardComplete
+        {
+            get => _socialSecurityCardComplete;
+            set => SetProperty(ref _socialSecurityCardComplete, value);
+        }
 
-        public bool DistinguishingFeaturesComplete { get; set; }
+        private bool _physicalDetailsComplete;
+        public bool PhysicalDetailsComplete
+        {
+            get => _physicalDetailsComplete;
+            set => SetProperty(ref _physicalDetailsComplete, value);
+        }
 
-        public bool FriendsComplete { get; set; }
+        private bool _distinguishingFeaturesComplete;
+        public bool DistinguishingFeaturesComplete
+        {
+            get => _distinguishingFeaturesComplete;
+            set => SetProperty(ref _distinguishingFeaturesComplete, value);
+        }
 
-        public bool DNAComplete { get; set; }
+        private bool _friendsComplete;
+        public bool FriendsComplete
+        {
+            get => _friendsComplete;
+            set => SetProperty(ref _friendsComplete, value);
+        }
 
-        public bool MementosComplete { get; set; }
+        private bool _dnaComplete;
+        public bool DNAComplete
+        {
+            get => _childPhotoComplete;
+            set => SetProperty(ref _dnaComplete, value);
+        }
 
-        public bool DivorceCustodyPapersComplete { get; set; }
+        private bool _mementosComplete;
+        public bool MementosComplete
+        {
+            get => _mementosComplete;
+            set => SetProperty(ref _mementosComplete, value);
+        }
 
-        public bool OtherParentsAndFamilyComplete { get; set; }
+        private bool _divorceCustodyPapersComplete;
+        public bool DivorceCustodyPapersComplete
+        {
+            get => _divorceCustodyPapersComplete;
+            set => SetProperty(ref _divorceCustodyPapersComplete, value);
+        }
+
+        private bool _otherParentsAndFamilyComplete;
+        public bool OtherParentsAndFamilyComplete
+        {
+            get => _otherParentsAndFamilyComplete;
+            set => SetProperty(ref _otherParentsAndFamilyComplete, value);
+        }
     }
 }

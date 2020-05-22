@@ -1,123 +1,72 @@
-﻿using MobileKidsIdApp.Models;
-using MobileKidsIdApp.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Xamarin.Forms;
 using System.IO;
+using System.Threading.Tasks;
+using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Platform;
+using MobileKidsIdApp.Services;
+using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class PhotosViewModel : ViewModelBase<Models.FileReferenceList>
+    // TODO: Rework to simplify this more.
+    public class PhotosViewModel : ViewModelBase // ViewModelBase<Models.FileReferenceList>
     {
-        private bool IsAdding { get; set; }
+        private readonly FamilyRepository _family;
+        private readonly IPhotoPicker _photoPicker;
 
-        public PhotosViewModel(FileReferenceList fileReferenceList)
+        public ObservableCollection<Photo> Photos { get; private set; } = new ObservableCollection<Photo>();
+
+        public Command AddPhotoCommand { get; private set; }
+        public Command<Photo> DeletePhotoCommand { get; private set; }
+
+        public PhotosViewModel(FamilyRepository family, IPhotoPicker photoPicker)
         {
-            IsAdding = false;
-            Model = fileReferenceList;
-            _choosePhotoCommand = new Command(ChoosePhoto);
-            _deletePhotoCommand = new Command(obj =>
-            {
-                var photoVM = (PhotoViewModel)obj;
-                PhotoViewModels.Remove(photoVM);
-                var fileRef = photoVM.FileReference;
-                Model.Remove(fileRef);
-                var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                var fullPath = Path.Combine(documentsPath, fileRef.FileName);
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            });
+            _family = family;
+            _photoPicker = photoPicker;
 
-            PhotoViewModels = new ObservableCollection<PhotoViewModel>();
+            AddPhotoCommand = new Command(async () => await AddPhoto());
+            DeletePhotoCommand = new Command<Photo>(DeletePhoto);
+
+            family.CurrentChild.Photos.ForEach(_ => Photos.Add(new Photo(_)));
         }
 
-        protected override void OnModelChanged(FileReferenceList oldValue, FileReferenceList newValue)
+        public async override void OnAppearing()
         {
-            if (oldValue != null)
-                oldValue.AddedNew -= Model_AddedNew;
-            if (newValue != null)
-                newValue.AddedNew += Model_AddedNew;
-
-            base.OnModelChanged(oldValue, newValue);
-        }
-
-        private async void Model_AddedNew(object sender, Csla.Core.AddedNewEventArgs<FileReference> e)
-        {
-            if (IsAdding)
-            {
-                return;
-            }
-
-            IsAdding = true;
-            var newItem = e.NewObject;
-            var destinationDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var fileName = GenerateUniqueFileNameFor(destinationDirectory);
-
-            PrepareToShowModal();
-            var fullFileName = await DependencyService.Get<IPhotoPicker>().GetCopiedFilePath(destinationDirectory, fileName);
-            if (fullFileName == null)
-            {
-                if (newItem != null)
-                {
-                    Model.Remove(newItem);
-                }
-                return;
-            }
-            newItem.FileName = fullFileName;
-            var photoVM = new PhotoViewModel(newItem);
-            await photoVM.InitializeAsync();
-            PhotoViewModels.Add(photoVM);
-            IsAdding = false;
-        }
-
-        protected override async Task<FileReferenceList> DoInitAsync()
-        {
-            var photoViewModels = Model.Select(_ => new PhotoViewModel(_)).ToList();
             var initTasks = new List<Task>();
-            foreach (var viewModel in photoViewModels)
-            {
-                PhotoViewModels.Add(viewModel);
-                initTasks.Add(viewModel.InitializeAsync());
-            }
+            Photos.ForEach(_ => initTasks.Add(_.InitializeAsync()));
             await Task.WhenAll(initTasks);
-            return Model;
         }
 
-        private readonly ICommand _choosePhotoCommand;
-        public ICommand ChoosePhotoCommand { get { return _choosePhotoCommand; } }
-        
-        public ObservableCollection<PhotoViewModel> PhotoViewModels { get; private set; }
-
-        private void ChoosePhoto()
+        private async Task AddPhoto()
         {
-            if (!IsAdding)
+            var destinationDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var fullFileName = await _photoPicker.GetCopiedFilePath(destinationDirectory, Guid.NewGuid().ToString());
+
+            if (fullFileName != null)
             {
-                BeginAddNew();
+                var fileReference = new FileReference();
+                fileReference.FileName = fullFileName;
+                _family.CurrentChild.Photos.Add(fileReference);
+
+                var photo = new Photo(fileReference);
+                await photo.InitializeAsync();
+                Photos.Add(photo);
             }
         }
 
-        private readonly ICommand _deletePhotoCommand;
-        public ICommand DeletePhotoCommand { get { return _deletePhotoCommand; } }
-
-        private static Random _rnd = new Random();
-        private static string GenerateUniqueFileNameFor(string path)
+        private void DeletePhoto(Photo photo)
         {
-            string generatedFileName;
-            var fileNames = Directory.GetFiles(path);
-            do
+            _family.CurrentChild.Photos.Remove(photo.FileReference);
+            Photos.Remove(photo);
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var fullPath = Path.Combine(documentsPath, photo.FileReference.FileName);
+            if (File.Exists(fullPath))
             {
-                generatedFileName = string.Empty;
-                for (int i = 0; i < 6; i++)
-                    generatedFileName += Convert.ToChar(_rnd.Next(97, 122));
-            } while (fileNames.Count(existingFileName => existingFileName.Equals(generatedFileName, 
-                StringComparison.InvariantCultureIgnoreCase)) > 0);
-            return generatedFileName;
+                File.Delete(fullPath);
+            }
         }
     }
 }

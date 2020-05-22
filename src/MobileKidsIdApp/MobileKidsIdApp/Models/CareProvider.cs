@@ -1,15 +1,40 @@
 ﻿namespace MobileKidsIdApp.Models
 {
-    public class CareProvider
+    public class CareProvider : NotifyPropertyChanged
     {
-        public string ProviderName { get; set; }
+        private string _providerName;
+        public string ProviderName
+        {
+            get => _providerName;
+            set => SetProperty(ref _providerName, value);
+        }
 
-        public string ClinicName { get; set; }
+        private string _clinicName;
+        public string ClinicName
+        {
+            get => _clinicName;
+            set => SetProperty(ref _clinicName, value);
+        }
 
-        public string CareRoleDescription { get; set; }
+        private string _careRoleDescription;
+        public string CareRoleDescription
+        {
+            get => _careRoleDescription;
+            set => SetProperty(ref _careRoleDescription, value);
+        }
 
-        public string Address { get; set; }
+        private string _address;
+        public string Address
+        {
+            get => _address;
+            set => SetProperty(ref _address, value);
+        }
 
-        public string Phone { get; set; }
+        private string _phone;
+        public string Phone
+        {
+            get => _phone;
+            set => SetProperty(ref _phone, value);
+        }
     }
 }

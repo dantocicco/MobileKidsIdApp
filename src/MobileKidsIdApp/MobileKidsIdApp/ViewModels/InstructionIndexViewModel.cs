@@ -1,44 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Input;
-
+using MobileKidsIdApp.Views;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class InstructionIndexViewModel
+    public class InstructionIndexViewModel : ViewModelBase
     {
-        public ICommand AbductionsCommand { get; private set; }
-        public ICommand AmberAlertsCommand { get; private set; }
-        public ICommand DisasterPrepCommand { get; private set; }
-        public ICommand DNACommand { get; private set; }
-        public ICommand InternationalCommand { get; private set; }
-        public ICommand MissingCommand { get; private set; }
-        public ICommand RunawaysCommand { get; private set; }
-        public ICommand ChildSafetyCommand { get; private set; }
-        public ICommand HTBoxCommand { get; private set; }
-        public ICommand MCMCommand { get; private set; }
+        public Command AbductionsCommand { get; private set; }
+        public Command AmberAlertsCommand { get; private set; }
+        public Command DisasterPrepCommand { get; private set; }
+        public Command DNACommand { get; private set; }
+        public Command InternationalCommand { get; private set; }
+        public Command MissingCommand { get; private set; }
+        public Command RunawaysCommand { get; private set; }
+        public Command ChildSafetyCommand { get; private set; }
+        public Command HTBoxCommand { get; private set; }
+        public Command MCMCommand { get; private set; }
 
         public InstructionIndexViewModel()
         {
-            AbductionsCommand = new Command(() => ShowContent("abduction"));
-            AmberAlertsCommand = new Command(() => ShowContent("amberalert"));
-            DisasterPrepCommand = new Command(() => ShowContent("disasterprep"));
-            DNACommand = new Command(() => ShowContent("dna"));
-            InternationalCommand = new Command(() => ShowContent("international"));
-            MissingCommand = new Command(() => ShowContent("missing"));
-            RunawaysCommand = new Command(() => ShowContent("runaway"));
-            ChildSafetyCommand = new Command(() => ShowContent("safety"));
-            HTBoxCommand = new Command(() => ShowContent("abouthtbox"));
-            MCMCommand = new Command(() => ShowContent("aboutmcm"));
+            AbductionsCommand = new Command(async () => await ShowContent("abduction"));
+            AmberAlertsCommand = new Command(async () => await ShowContent("amberalert"));
+            DisasterPrepCommand = new Command(async () => await ShowContent("disasterprep"));
+            DNACommand = new Command(async () => await ShowContent("dna"));
+            InternationalCommand = new Command(async () => await ShowContent("international"));
+            MissingCommand = new Command(async () => await ShowContent("missing"));
+            RunawaysCommand = new Command(async () => await ShowContent("runaway"));
+            ChildSafetyCommand = new Command(async () => await ShowContent("safety"));
+            HTBoxCommand = new Command(async () => await ShowContent("abouthtbox"));
+            MCMCommand = new Command(async () => await ShowContent("aboutmcm"));
         }
 
-        private void ShowContent(string contentLabel)
+        private async Task ShowContent(string contentLabel)
         {
-            App.RootPage.Navigation.PushAsync(new Views.StaticContent { BindingContext = new StaticContent(contentLabel) });
+            var p = new Dictionary<string, object>()
+            {
+                ["contentName"] = contentLabel
+            };
+
+            await PushAsync<StaticContentPage, StaticContentViewModel>(p);
         }
     }
 }

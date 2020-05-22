@@ -1,8 +1,13 @@
 ﻿namespace MobileKidsIdApp.Models
 {
-    public class DistinguishingFeature
+    public class DistinguishingFeature : NotifyPropertyChanged
     {
-        public string Description { get; set; }
+        private string _description;
+        public string Description
+        {
+            get => _description;
+            set => SetProperty(ref _description, value);
+        }
 
         public FileReference FileReference { get; set; }
     }

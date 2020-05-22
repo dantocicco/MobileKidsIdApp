@@ -4,28 +4,88 @@ namespace MobileKidsIdApp.Models
 {
     public partial class Child
     {
-        public string Height { get; set; }
+        private string _height;
+        public string Height
+        {
+            get => _height;
+            set => SetProperty(ref _height, value);
+        }
 
-        public string Weight { get; set; }
+        private string _weight;
+        public string Weight
+        {
+            get => _weight;
+            set => SetProperty(ref _weight, value);
+        }
 
-        public DateTime MeasurementDate { get; set; }
+        private DateTime _measurementDate;
+        public DateTime MeasurementDate
+        {
+            get => _measurementDate;
+            set => SetProperty(ref _measurementDate, value);
+        }
 
-        public string HairColor { get; set; }
+        private string _hairColor;
+        public string HairColor
+        {
+            get => _hairColor;
+            set => SetProperty(ref _hairColor, value);
+        }
 
-        public string HairStyle { get; set; }
+        private string _hairStyle;
+        public string HairStyle
+        {
+            get => _hairStyle;
+            set => SetProperty(ref _hairStyle, value);
+        }
 
-        public string EyeColor { get; set; }
+        private string _eyeColor;
+        public string EyeColor
+        {
+            get => _eyeColor;
+            set => SetProperty(ref _eyeColor, value);
+        }
 
-        public bool EyeContacts { get; set; }
+        private bool _eyeContacts;
+        public bool EyeContacts
+        {
+            get => _eyeContacts;
+            set => SetProperty(ref _eyeContacts, value);
+        }
 
-        public bool EyeGlasses { get; set; }
+        private bool _eyeGlasses;
+        public bool EyeGlasses
+        {
+            get => _eyeGlasses;
+            set => SetProperty(ref _eyeGlasses, value);
+        }
 
-        public string SkinTone { get; set; }
+        private string _skinTone;
+        public string SkinTone
+        {
+            get => _skinTone;
+            set => SetProperty(ref _skinTone, value);
+        }
 
-        public string RacialEthnicIdentity { get; set; }
+        private string _racialEthnicIdentity;
+        public string RacialEthnicIdentity
+        {
+            get => _racialEthnicIdentity;
+            set => SetProperty(ref _racialEthnicIdentity, value);
+        }
 
-        public string Gender { get; set; }
+        private string _gender;
+        public string Gender
+        {
+            get => _gender;
+            set => SetProperty(ref _gender, value);
+        }
 
-        public string GenderIdentity { get; set; }
+        private string _genderIdentity;
+        public string GenderIdentity
+        {
+            get => _genderIdentity;
+            set => SetProperty(ref _genderIdentity, value);
+        }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
+using MobileKidsIdApp.Models;
 
 namespace MobileKidsIdApp.Platform
 {
+    // TODO: Replace with Essentials? 
     public interface IContactPicker
     {
-        Task<ViewModels.ContactInfo> GetSelectedContactInfo();
+        Task<ContactInfo> GetSelectedContactInfo();
 
-        Task<ViewModels.ContactInfo> GetContactInfoForId(string id);
+        Task<ContactInfo> GetContactInfoForId(string id);
     }
 }

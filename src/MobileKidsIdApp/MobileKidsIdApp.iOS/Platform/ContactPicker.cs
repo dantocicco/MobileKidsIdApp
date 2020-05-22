@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using Contacts;
 using ContactsUI;
 using Foundation;
+using MobileKidsIdApp.Models;
 using MobileKidsIdApp.Platform;
-using MobileKidsIdApp.ViewModels;
 using UIKit;
 
-[assembly: Xamarin.Forms.Dependency(typeof(MobileKidsIdApp.iOS.Platform.ContactPicker))]
 namespace MobileKidsIdApp.iOS.Platform
 {
     /// <summary>

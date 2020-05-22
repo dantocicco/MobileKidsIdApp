@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Android.Content;
 using MobileKidsIdApp.Platform;
 
-[assembly: Xamarin.Forms.Dependency(typeof(MobileKidsIdApp.Droid.Platform.PhotoPicker))]
 namespace MobileKidsIdApp.Droid.Platform
 {
     public class PhotoPicker : Java.Lang.Object, IPhotoPicker
     {
+        private MainActivity MainActivity => Xamarin.Essentials.Platform.CurrentActivity as MainActivity;
+
         private readonly int PhotoPickerRequestCode = 32767;
 
         public Task<string> GetCopiedFilePath(string copyToDirectory, string fileNameWithoutExtension)
@@ -18,12 +19,13 @@ namespace MobileKidsIdApp.Droid.Platform
 
             var tcs = new TaskCompletionSource<string>();
             EventHandler<ActivityResultEventArgs> handler = (sender, e) => OnActivityResult(copyToDirectory, fileNameWithoutExtension, e, tcs);
-            MainActivity.Instance.ActivityResult += handler;
-            tcs.Task.ContinueWith(t => MainActivity.Instance.ActivityResult -= handler);
+            
+            MainActivity.ActivityResult += handler;
+            tcs.Task.ContinueWith(t => MainActivity.ActivityResult -= handler);
             
             try
             {
-                MainActivity.Instance.StartActivityForResult(Intent.CreateChooser(imageIntent, "Select Photo"), PhotoPickerRequestCode);
+                MainActivity.StartActivityForResult(Intent.CreateChooser(imageIntent, "Select Photo"), PhotoPickerRequestCode);
             }
             catch (Exception ex)
             {
@@ -48,7 +50,7 @@ namespace MobileKidsIdApp.Droid.Platform
                     {
                         var fullFileName = fileNameWithoutExtension + extension;
                         var copiedPath = System.IO.Path.Combine(copyToDirectory, fullFileName);
-                        using (var stream = MainActivity.Instance.ContentResolver.OpenInputStream(e.data.Data))
+                        using (var stream = MainActivity.ContentResolver.OpenInputStream(e.data.Data))
                         {
                             using (var copiedFileStream = new System.IO.FileStream(copiedPath, System.IO.FileMode.OpenOrCreate))
                             {

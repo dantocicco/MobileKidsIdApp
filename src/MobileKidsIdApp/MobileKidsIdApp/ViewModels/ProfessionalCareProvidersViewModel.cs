@@ -1,23 +1,32 @@
-﻿using Csla.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Services;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class ProfessionalCareProvidersViewModel : ViewModelBase<Models.CareProviderList>
+    public class ProfessionalCareProvidersViewModel : ViewModelBase
     {
-        public ICommand NewItemCommand { get; private set; }
+        private readonly FamilyRepository _family;
 
-        public ProfessionalCareProvidersViewModel(Models.CareProviderList list)
+        public ObservableCollection<CareProvider> CareProviders { get; private set; } = new ObservableCollection<CareProvider>();
+
+        public Command AddProviderCommand { get; private set; }
+
+        public ProfessionalCareProvidersViewModel(FamilyRepository family)
         {
-            NewItemCommand = new Command(() => BeginAddNew());
+            _family = family;
 
-            Model = list;
+            family.CurrentChild.ProfessionalCareProviders.ForEach(_ => CareProviders.Add(_));
+
+            AddProviderCommand = new Command(AddProvider);
+        }
+
+        private void AddProvider()
+        {
+            var provider = new CareProvider();
+            _family.CurrentChild.ProfessionalCareProviders.Add(provider);
+            CareProviders.Add(provider);
         }
     }
 }

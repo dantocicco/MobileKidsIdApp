@@ -2,18 +2,53 @@
 {
     public partial class Child
     {
-        public string MedicalAlertInfo { get; set; }
+        private string _medicalAlertInfo;
+        public string MedicalAlertInfo
+        {
+            get => _medicalAlertInfo;
+            set => SetProperty(ref _medicalAlertInfo, value);
+        }
 
-        public string Allergies { get; set; }
+        private string _allergies;
+        public string Allergies
+        {
+            get => _allergies;
+            set => SetProperty(ref _allergies, value);
+        }
 
-        public string RegularMedications { get; set; }
+        private string _regularMedications;
+        public string RegularMedications
+        {
+            get => _regularMedications;
+            set => SetProperty(ref _regularMedications, value);
+        }
 
-        public string PsychMedications { get; set; }
+        private string _psychMedications;
+        public string PsychMedications
+        {
+            get => _psychMedications;
+            set => SetProperty(ref _psychMedications, value);
+        }
 
-        public string Notes { get; set; }
+        private string _notes;
+        public string Notes
+        {
+            get => _notes;
+            set => SetProperty(ref _notes, value);
+        }
 
-        public bool Inhaler { get; set; }
+        private bool _inhaler;
+        public bool Inhaler
+        {
+            get => _inhaler;
+            set => SetProperty(ref _inhaler, value);
+        }
 
-        public bool Diabetic { get; set; }
+        private bool _diabetic;
+        public bool Diabetic
+    {
+            get => _diabetic;
+            set => SetProperty(ref _diabetic, value);
+        }
     }
 }

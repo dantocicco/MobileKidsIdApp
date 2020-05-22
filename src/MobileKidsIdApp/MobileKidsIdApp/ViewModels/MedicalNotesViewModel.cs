@@ -1,17 +1,20 @@
-﻿using Csla.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Services;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class MedicalNotesViewModel : ViewModelBase<Models.MedicalNotes>
+    public class MedicalNotesViewModel : ViewModelBase
     {
-        public MedicalNotesViewModel(Models.MedicalNotes medicalNotes)
+        private Child _child;
+        public Child Child
         {
-            Model = medicalNotes;
+            get => _child;
+            set => SetProperty(ref _child, value);
+        }
+
+        public MedicalNotesViewModel(FamilyRepository family)
+        {
+            Child = family.CurrentChild;
         }
     }
 }

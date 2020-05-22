@@ -1,14 +1,14 @@
-﻿using MobileKidsIdApp.Models;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace MobileKidsIdApp.ViewModels
+namespace MobileKidsIdApp.Models
 {
-    public class PhotoViewModel
+    public class Photo : NotifyPropertyChanged
     {
-        public PhotoViewModel(FileReference fileReference)
+        // TODO: Replace with a PhotoRepository
+        public Photo(FileReference fileReference)
         {
             FileReference = fileReference;
         }
@@ -42,6 +42,11 @@ namespace MobileKidsIdApp.ViewModels
 
         public FileReference FileReference { get; private set; }
 
-        public ImageSource ImageSource { get; private set; }
+        private ImageSource _imageSource;
+        public ImageSource ImageSource
+        {
+            get => _imageSource;
+            set => SetProperty(ref _imageSource, value);
+        }
     }
 }

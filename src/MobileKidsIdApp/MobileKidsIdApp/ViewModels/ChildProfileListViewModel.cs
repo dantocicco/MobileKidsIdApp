@@ -53,7 +53,7 @@ namespace MobileKidsIdApp.ViewModels
 
         private async Task AddChild()
         {
-            await PushAsync<ChildProfileItemPage, ChildProfileeVViewModel>(false);
+            await PushAsync<ChildProfilePage, ChildProfileViewModel>(false);
             await PushAsync<BasicDetailsPage, BasicDetailsViewModel>();
         }
 
@@ -66,7 +66,7 @@ namespace MobileKidsIdApp.ViewModels
         public async Task ChildTapped(Child child)
         {
             _family.SetCurrentChild(child);
-            await PushAsync<ChildProfileItemPage, ChildProfileeVViewModel>();
+            await PushAsync<ChildProfilePage, ChildProfileViewModel>();
         }
     }
 }

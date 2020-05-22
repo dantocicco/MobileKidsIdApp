@@ -1,18 +1,20 @@
-﻿using Csla.Xaml;
-using MobileKidsIdApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Services;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class PreparationChecklistViewModel : ViewModelBase<Models.PreparationChecklist>
+    public class PreparationChecklistViewModel : ViewModelBase
     {
-        public PreparationChecklistViewModel(Models.PreparationChecklist preparationChecklist)
+        private Child _child;
+        public Child Child
         {
-            Model = preparationChecklist;
+            get => _child;
+            set => SetProperty(ref _child, value);
+        }
+
+        public PreparationChecklistViewModel(FamilyRepository family)
+        {
+            Child = family.CurrentChild;
         }
     }
 }

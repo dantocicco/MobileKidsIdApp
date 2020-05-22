@@ -5,7 +5,6 @@ using MobileKidsIdApp.Platform;
 using UIKit;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(MobileKidsIdApp.iOS.Platform.PhotoPicker))]
 namespace MobileKidsIdApp.iOS.Platform
 {
     public class PhotoPicker : IPhotoPicker

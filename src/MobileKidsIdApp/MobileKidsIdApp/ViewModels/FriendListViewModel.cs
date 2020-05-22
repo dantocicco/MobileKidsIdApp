@@ -1,100 +1,61 @@
-﻿using Csla.Core;
-using MobileKidsIdApp.Models;
-using MobileKidsIdApp.Services;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Platform;
+using MobileKidsIdApp.Services;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class FriendListViewModel : ViewModelBase<Models.FriendList>
+    public class FriendListViewModel : ViewModelBase
     {
-        public ICommand NewItemCommand { get; private set; }
+        private readonly FamilyRepository _family;
+        private readonly IContactPicker _contactPicker;
 
-        public ObservableCollection<FriendInfo> List { get; private set; }
-        public FriendInfo CurrentItem { get; set; }
+        public ObservableCollection<Friend> Friends { get; private set; }
 
-        public FriendListViewModel(Models.FriendList list)
+        public Command NewFriendCommand { get; private set; }
+        public Command<Friend> ChangeContactCommand { get; private set; }
+        public Command<Friend> DeleteContactCommand { get; private set; }
+
+        public FriendListViewModel(FamilyRepository family, IContactPicker contactPicker)
         {
-            List = new ObservableCollection<FriendInfo>();
-            NewItemCommand = new Command(() => BeginAddNew());
-            Model = list;
+            _family = family;
+            _contactPicker = contactPicker;
+
+            family.CurrentChild.Friends.ForEach(_ => Friends.Add(_));
+
+            NewFriendCommand = new Command(async () => await AddFriend());
+            ChangeContactCommand = new Command<Friend>(async (_) => await ChangeContact(_));
+            DeleteContactCommand = new Command<Friend>(DeleteContact);
         }
 
-        protected override async Task<Models.FriendList> DoInitAsync()
+        private async Task AddFriend()
         {
-            foreach (var item in Model)
+            ContactInfo contact = await _contactPicker.GetSelectedContactInfo();
+
+            if (contact != null)
             {
-                try
-                {
-                    ContactInfo contact = await DependencyService.Get<IContactPicker>().GetContactInfoForId(item.ContactId);
-                    if (contact != null)
-                        List.Add(new FriendInfo(contact));
-                }
-                catch (Exception ex)
-                {
-                    var x = ex;
-                }
-            }
-            return Model;
-        }
-
-        protected override void OnModelChanged(Models.FriendList oldValue, Models.FriendList newValue)
-        {
-            if (oldValue != null)
-                oldValue.AddedNew -= Model_AddedNew;
-            if (newValue != null)
-                newValue.AddedNew += Model_AddedNew;
-
-            base.OnModelChanged(oldValue, newValue);
-        }
-
-        private bool _adding = false;
-        private async void Model_AddedNew(object sender, AddedNewEventArgs<Friend> e)
-        {
-            if (!_adding)
-            {
-                _adding = true;
-                PrepareToShowModal();
-                ContactInfo contact = await DependencyService.Get<IContactPicker>().GetSelectedContactInfo();
-                if (contact == null)
-                {
-                    Model.Remove(e.NewObject);
-                }
-                else
-                {
-                    e.NewObject.ContactId = contact.Id;
-                    List.Add(new FriendInfo(contact));
-                }
-                _adding = false;
+                var friend = new Friend(contact);
+                _family.CurrentChild.Friends.Add(friend);
+                Friends.Add(friend);
             }
         }
 
-        public async void ChangeContact()
+        private async Task ChangeContact(Friend friend)
         {
-            if (CurrentItem == null) return;
+            ContactInfo contact = await _contactPicker.GetSelectedContactInfo();
 
-            PrepareToShowModal();
-            ContactInfo contact = await DependencyService.Get<IContactPicker>().GetSelectedContactInfo();
-            if (contact != null && CurrentItem.ContactId != contact.Id)
+            if (contact != null)
             {
-                var oldItem = Model.Where(m => m.ContactId == CurrentItem.ContactId).FirstOrDefault();
-                if (oldItem != null)
-                    oldItem.ContactId = contact.Id;
-                List[List.IndexOf(CurrentItem)] = new FriendInfo(contact);
+                friend.UpdateFromContact(contact);
             }
         }
 
-        public void DeleteContact()
+        private void DeleteContact(Friend friend)
         {
-            if (CurrentItem == null) return;
-
-            var oldItem = Model.Where(m => m.ContactId == CurrentItem.ContactId).FirstOrDefault();
-            Model.Remove(oldItem);
-            List.RemoveAt(List.IndexOf(CurrentItem));
+            _family.CurrentChild.Friends.Remove(friend);
+            Friends.Remove(friend);
         }
     }
 }

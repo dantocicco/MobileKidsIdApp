@@ -8,7 +8,6 @@ namespace MobileKidsIdApp.ViewModels
 {
     public class BasicDetailsViewModel : ViewModelBase
     {
-        private readonly FamilyRepository _family;
         private readonly IContactPicker _contactPicker;
 
         private Child _child;
@@ -29,10 +28,11 @@ namespace MobileKidsIdApp.ViewModels
 
         public BasicDetailsViewModel(FamilyRepository family, IContactPicker contactPicker)
         {
-            _family = family;
             _contactPicker = contactPicker;
 
-            ChangeContactCommand = new Command(async () => ChangeContact());
+            Child = family.CurrentChild;
+
+            ChangeContactCommand = new Command(async () => await ChangeContact());
         }
 
         private async Task ChangeContact()
@@ -44,18 +44,35 @@ namespace MobileKidsIdApp.ViewModels
                 Contact = contact;
 
                 //Only overwrite name fields if they were blank.
-                if (string.IsNullOrEmpty(Model.FamilyName))
-                    Model.FamilyName = contact.FamilyName;
-                if (string.IsNullOrEmpty(Model.NickName))
-                    Model.NickName = contact.NickName;
-                if (string.IsNullOrEmpty(Model.AdditionalName))
-                    Model.AdditionalName = contact.AdditionalName;
-                if (string.IsNullOrEmpty(Model.GivenName))
-                    Model.GivenName = contact.GivenName;
-                if (string.IsNullOrEmpty(Model.ContactNameManual))
-                    Model.ContactNameManual = contact.ContactNameManual;
-                if (string.IsNullOrEmpty(Model.ContactPhoneManual))
-                    Model.ContactPhoneManual = contact.ContactPhoneManual;
+                if (string.IsNullOrEmpty(Child.FamilyName))
+                {
+                    Child.FamilyName = contact.FamilyName;
+                }
+
+                if (string.IsNullOrEmpty(Child.NickName))
+                {
+                    Child.NickName = contact.NickName;
+                }
+
+                if (string.IsNullOrEmpty(Child.AdditionalName))
+                {
+                    Child.AdditionalName = contact.AdditionalName;
+                }
+
+                if (string.IsNullOrEmpty(Child.GivenName))
+                {
+                    Child.GivenName = contact.GivenName;
+                }
+
+                if (string.IsNullOrEmpty(Child.ContactNameManual))
+                {
+                    Child.ContactNameManual = contact.ContactNameManual;
+                }
+
+                if (string.IsNullOrEmpty(Child.ContactPhoneManual))
+                {
+                    Child.ContactPhoneManual = contact.ContactPhoneManual;
+                }
             }
         }
     }

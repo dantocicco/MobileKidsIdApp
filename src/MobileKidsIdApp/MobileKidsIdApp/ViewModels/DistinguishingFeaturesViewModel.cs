@@ -1,23 +1,32 @@
-﻿using Csla.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using MobileKidsIdApp.Models;
+using MobileKidsIdApp.Services;
 using Xamarin.Forms;
 
 namespace MobileKidsIdApp.ViewModels
 {
-    public class DistinguishingFeaturesViewModel : ViewModelBase<Models.DistinguishingFeatureList>
+    public class DistinguishingFeaturesViewModel : ViewModelBase
     {
-        public ICommand NewItemCommand { get; private set; }
+        private readonly FamilyRepository _family;
 
-        public DistinguishingFeaturesViewModel(Models.DistinguishingFeatureList list)
+        public ObservableCollection<DistinguishingFeature> Features { get; private set; } = new ObservableCollection<DistinguishingFeature>();
+
+        public Command AddFeatureCommand { get; private set; }
+
+        public DistinguishingFeaturesViewModel(FamilyRepository family)
         {
-            NewItemCommand = new Command(() => BeginAddNew());
+            _family = family;
 
-            Model = list;
+            family.CurrentChild.DistinguishingFeatures.ForEach(_ => Features.Add(_));
+
+            AddFeatureCommand = new Command(AddFeature);
+        }
+
+        private void AddFeature()
+        {
+            var feature = new DistinguishingFeature();
+            _family.CurrentChild.DistinguishingFeatures.Add(feature);
+            Features.Add(feature);
         }
     }
 }

@@ -5,28 +5,29 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Provider;
+using MobileKidsIdApp.Models;
 using MobileKidsIdApp.Platform;
-using MobileKidsIdApp.ViewModels;
 
-[assembly: Xamarin.Forms.Dependency(typeof(MobileKidsIdApp.Droid.Platform.ContactPicker))]
 namespace MobileKidsIdApp.Droid.Platform
 {
     public class ContactPicker : Java.Lang.Object, IContactPicker
     {
+        private MainActivity MainActivity => Xamarin.Essentials.Platform.CurrentActivity as MainActivity;
+        
         public Task<ContactInfo> GetSelectedContactInfo()
         {
             var tcs = new TaskCompletionSource<ContactInfo>();
 
             var pickContactIntent =
                 new Intent(Intent.ActionPick, Android.Net.Uri.Parse("content://contacts"));
-            pickContactIntent.SetType(Android.Provider.ContactsContract.CommonDataKinds.Phone.ContentType); // Show user only contacts w/ phone numbers
+            pickContactIntent.SetType(ContactsContract.CommonDataKinds.Phone.ContentType); // Show user only contacts w/ phone numbers
 
             var handler = new EventHandler<ActivityResultEventArgs>((sender, e) => OnActivityResult(tcs, e));
-            MainActivity.Instance.ActivityResult += handler;
-            tcs.Task.ContinueWith(t => MainActivity.Instance.ActivityResult -= handler);
+            MainActivity.ActivityResult += handler;
+            tcs.Task.ContinueWith(t => MainActivity.ActivityResult -= handler);
             try
             {
-                MainActivity.Instance.StartActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+                MainActivity.StartActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
             }
             catch (Exception ex)
             {
@@ -45,7 +46,7 @@ namespace MobileKidsIdApp.Droid.Platform
                 // Make sure the request was successful
                 if (e.resultCode == Android.App.Result.Ok)
                 {
-                    var loader = new CursorLoader(MainActivity.Instance, e.data.Data, projection, null, null, null);
+                    var loader = new CursorLoader(MainActivity, e.data.Data, projection, null, null, null);
                     var cursor = (Android.Database.ICursor)loader.LoadInBackground();
 
                     var contactList = new List<ContactInfo>();

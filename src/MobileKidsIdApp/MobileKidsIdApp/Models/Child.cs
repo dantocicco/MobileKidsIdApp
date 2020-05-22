@@ -3,25 +3,66 @@ using System.Collections.Generic;
 
 namespace MobileKidsIdApp.Models
 {
-    public partial class Child
+    public partial class Child : NotifyPropertyChanged
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public string GivenName { get; set; }
+        public string ContactID { get; set; } // TODO: What's the use of the contact IDs? 
 
-        public string NickName { get; set; }
+        private string _givenName;
+        public string GivenName
+        {
+            get => _givenName;
+            set => SetProperty(ref _givenName, value);
+        }
 
-        public string AdditionalName { get; set; }
+        private string _nickName;
+        public string NickName
+        {
+            get => _nickName;
+            set => SetProperty(ref _nickName, value);
+        }
 
-        public string FamilyName { get; set; }
 
-        public DateTime Birthday { get; set; }
+        private string _additionalName;
+        public string AdditionalName
+        {
+            get => _additionalName;
+            set => SetProperty(ref _additionalName, value);
+        }
 
-        public string ContactID { get; set; }
 
-        public string ContactNameManual { get; set; }
+        private string _familyName;
+        public string FamilyName
+        {
+            get => _familyName;
+            set => SetProperty(ref _familyName, value);
+        }
 
-        public string ContactPhoneManual { get; set; }
+
+        private DateTime _birthday;
+        public DateTime Birthday
+        {
+            get => _birthday;
+            set => SetProperty(ref _birthday, value);
+        }
+
+        // TODO: Is this property needed?
+        private string _contactNameManual;
+        public string ContactNameManual
+        {
+            get => _contactNameManual;
+            set => SetProperty(ref _contactNameManual, value);
+        }
+
+        // TODO: Is this proeprty needed? 
+        private string _contactPhoneManual;
+        public string ContactPhoneManual
+        {
+            get => _contactPhoneManual;
+            set => SetProperty(ref _contactPhoneManual, value);
+        }
+
 
         public List<DistinguishingFeature> DistinguishingFeatures { get; set; } = new List<DistinguishingFeature>();
 
